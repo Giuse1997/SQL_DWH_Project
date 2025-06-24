@@ -13,7 +13,7 @@ L’obiettivo del progetto è strutturare i dati per supportare analisi approfon
 
 ----
 
-### BI: Analytics & Reposting
+### BI: Analytics & Reporting
 
 #### Objective
 Sviluppare analytics SQL per far emergere insight inerenti a:
