@@ -1,8 +1,25 @@
 
 
 
+/*
+======================================================================
+Script: creazione gold views
+======================================================================
+
+Scopo: l'obiettivo dello script è quello di realizzare le viste per il gold layer del DWH.
+Il gold Layer rappresenta le viste delle dimensioni e dei fatti (star schema)
+
+*/
 
 
+
+-- =================================================================
+-- Creazione Dimensione: gold.dim_customers
+-- =================================================================
+
+if OBJECT_ID('gold.dim_customers','V') is not null
+	drop view gold.dim_customers;
+go
 create view gold.dim_customers as
 SELECT distinct
 	 row_number() over(order by a.cst_id) as customer_key
@@ -21,9 +38,19 @@ FROM DataWarehouse.silver.crm_cust_info a
 left join silver.erp_cust_az12 b on a.cst_key = b.cid
 left join silver.erp_loc_a101 c on a.cst_key=c.cid
 
+go
 
 
-/*
+
+-- =================================================================
+-- Creazione Dimensione: gold.dim_products
+-- =================================================================
+
+if OBJECT_ID('gold.dim_products','V') is not null
+	drop view gold.dim_products;
+
+go
+
 create view gold.dim_products as 
 SELECT 
        row_number() over(order by a.prd_start_dt, a.prd_key) as product_key
@@ -40,7 +67,20 @@ SELECT
   FROM DataWarehouse.silver.crm_prd_info a
   left join silver.erp_px_cat_g1v2 b on a.cat_id=b.id
   where prd_end_dt is null -- i dati storici non sono necessari
-  */
+ 
+ go
+
+
+-- =================================================================
+-- Creazione Dimensione: gold.fact_sales
+-- =================================================================
+
+if OBJECT_ID('gold.fact_sales','V') is not null
+	drop view gold.fact_sales;
+
+go
+
+
 create view gold.fact_sales as 
 SELECT 
 	   a.sls_ord_num as order_number
@@ -55,3 +95,4 @@ SELECT
   FROM DataWarehouse.silver.crm_sales_details a 
   left join gold.dim_products b on a.sls_prd_key=b.product_number
   left join gold.dim_customers c on a.sls_cust_id=c.customer_id
+go
